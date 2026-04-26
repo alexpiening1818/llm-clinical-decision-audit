@@ -1,0 +1,172 @@
+# Analysis Lock — V4 Two-Model Temp-0 Single-Domain (Gemini + GPT-5.4)
+
+This lock freezes the single-domain breast RT analysis artifacts for the deterministic rerun settings (`temperature=0.0`, fixed seed) for two models.
+
+## Scope
+
+- Domain: breast RT perturbation audit (`base_cases.jsonl` + `perturbations.jsonl`)
+- Models rerun at temp-0:
+  - `gemini-2.5-pro`
+  - `gpt-5.4` (configured under model label `gpt-5`)
+- Run size per model: `705 perturbations x 3 repetitions = 2115 calls`
+- Original temp-0.2 artifacts remain locked in prior lock files and are not overwritten.
+
+## Locked Artifacts
+
+- `responses_gemini_temp0_full_20260424_200300.jsonl`
+- `analysis_gemini_temp0_full.json`
+- `analysis_gemini_temp0_pi_feedback.json`
+- `manifest_gemini_temp0_full_20260424_200300.json`
+- `responses_gpt54_temp0_full_20260425_091414.jsonl`
+- `analysis_gpt54_temp0_full.json`
+- `analysis_gpt54_temp0_pi_feedback.json`
+- `manifest_gpt54_temp0_full_20260425_091414.json`
+- `base_cases.jsonl`
+- `perturbations.jsonl`
+- `evaluate.py`
+- `analyze.py`
+- `pi_feedback_analysis.py`
+
+## SHA256 Checksums
+
+- `responses_gemini_temp0_full_20260424_200300.jsonl`  
+  `59d3fd520ee06af7e20954b2a7592c515dfc88023cec6475abfb9dbc1e3d4cff`
+- `analysis_gemini_temp0_full.json`  
+  `abf3421b9b44795de9b388a00aeebd47e489bddea57bb25a49c93c8f81c4be75`
+- `analysis_gemini_temp0_pi_feedback.json`  
+  `39c5828894569590266df79a7fa3432bc3f4649b591f78760025331fafffc205`
+- `manifest_gemini_temp0_full_20260424_200300.json`  
+  `09d5dce799736b3f8debb8de300177703aabb0f12cb8d0b2a6637906c654d0ab`
+- `responses_gpt54_temp0_full_20260425_091414.jsonl`  
+  `a2dc56f76a71a8df3b9d4c3df4fe99d43a0b4f738ebeaf5ed9e8467b7e5e083e`
+- `analysis_gpt54_temp0_full.json`  
+  `f49aa3c5e0a3221cf7a3d8768bf614b16f5a5ae18402fac34d8eff0933b4cb7c`
+- `analysis_gpt54_temp0_pi_feedback.json`  
+  `87e7776270a1019beee618e34d3889633036ccba7d78ad987f442d922d025255`
+- `manifest_gpt54_temp0_full_20260425_091414.json`  
+  `a6b0e311fba3e6841503235b5edc82e7bf62b84f145c1caddf693bf7b7b78004`
+- `base_cases.jsonl`  
+  `28504bf63a269932fdf85024c68a917cc23f7b50a0bf8e08086056e99d562639`
+- `perturbations.jsonl`  
+  `fb4df4b02f83304d204ce4d276e9a0473708fbbdcb3c9f7525afbade0e106004`
+- `evaluate.py`  
+  `82b82148884e558e07d70c95c7330bb24dc816e4c72203a55e90507cc4b2ba29`
+- `analyze.py`  
+  `1e8451a4a4c724687d46d6b1ecdda6ed8fa88dd9ff2de7594dfaa2b3f06bf9fe`
+- `pi_feedback_analysis.py`  
+  `6c1f747cde00ca24083394990ebb5c3ce0faad6cd0a046fd97071c6c9c004750`
+
+## Key Determinism Note
+
+Baseline unanimity (test-retest on baseline prompts):
+
+- Gemini: `71.2%` (temp 0.2) -> `87.2%` (temp 0.0)
+- GPT-5.4: `94.8%` (temp 0.2) -> `96.4%` (temp 0.0)
+
+Interpretation: temp-0 improved baseline repeatability for both models but did not produce perfect (`100%`) determinism.
+
+## Lock Rule
+
+Use these exact files for V4 temp-0 rerun reporting.
+If any code/data changes are made, create a new lock file (e.g., `ANALYSIS_LOCK_V5_...`) rather than editing this lock.
+
+## Primary Numerical Results (Locked)
+
+These are the headline results derived from the locked artifacts above. Designated primary analysis for the manuscript; temp-0.2 results retained as sensitivity analysis.
+
+### Test-retest stability (baseline unanimity)
+
+| Model | Temp 0.2 | Temp 0 (primary) |
+|---|---|---|
+| Gemini 2.5 Pro | 71.2% | 87.2% |
+| GPT-5.4 | 94.8% | 96.4% |
+| Claude Opus 4.7 | n/a (param not accepted) | 90.4% |
+
+### Baseline concordance with rule-engine reference
+
+| Model | Temp 0.2 | Temp 0 (primary) |
+|---|---|---|
+| Gemini 2.5 Pro | 80.0% | 82.0% |
+| GPT-5.4 | 82.0% | 80.0% |
+| Claude Opus 4.7 | n/a | 84.0% |
+
+### Primary outcome — baseline-concordant harmful instability
+
+| Model | Temp 0.2 | Temp 0 (primary) |
+|---|---|---|
+| Gemini 2.5 Pro | 4.33% | 8.34% |
+| GPT-5.4 | 3.46% | 3.61% |
+| Claude Opus 4.7 | n/a | 1.72% |
+
+### Standard inappropriate flip rate
+
+| Model | Temp 0.2 | Temp 0 (primary) |
+|---|---|---|
+| Gemini 2.5 Pro | 14.81% | 15.88% |
+| GPT-5.4 | 6.21% | 6.07% |
+| Claude Opus 4.7 | n/a | 7.30% |
+
+### Calibration ratio
+
+| Model | Temp 0.2 | Temp 0 (primary) |
+|---|---|---|
+| Gemini 2.5 Pro | 4.23 | 3.81 |
+| GPT-5.4 | 9.64 | 10.13 |
+| Claude Opus 4.7 | n/a | 8.72 |
+
+### Directional decomposition (baseline-concordant invariant, temp 0)
+
+| Model | Over-treatment | Under-treatment | Asymmetry |
+|---|---|---|---|
+| Gemini 2.5 Pro | 2.58% | 5.76% | 2.2× toward under |
+| GPT-5.4 | 0.62% | 2.99% | 4.8× toward under |
+| Claude Opus 4.7 | 0.86% | 0.86% | balanced |
+
+### Positive control sensitivity (PI-aligned, primary decision)
+
+| Model | Hard controls | Soft controls |
+|---|---|---|
+| Gemini 2.5 Pro | 50.8% | 43.6% |
+| GPT-5.4 | 50.0% | 64.1% |
+| Claude Opus 4.7 | 45.2% | 66.7% |
+
+### Strict sensitivity excluding social_situation
+
+| Model | Full | Strict |
+|---|---|---|
+| Gemini 2.5 Pro | 8.34% | 8.21% |
+| GPT-5.4 | 3.61% | 3.41% |
+
+## Pre-Registration Deviations Documented
+
+Per section 13 of `PREREGISTRATION.md`, the following deviations are formally documented:
+
+1. **Llama 3.3 70B comparator excluded from primary analysis.** Persistent connection-level instability via Groq prevented a reliable full comparator dataset (67 of 376 attempted calls successful). Retained as exploratory feasibility data only.
+2. **Model version: GPT-5 -> GPT-5.4.** Pre-registration specified the model class; GPT-5.4 was the current frontier OpenAI version at execution time.
+3. **Claude Opus 4.7 temperature parameter not accepted.** API-level constraint; documented and confirmed near-deterministic behavior empirically (90.4% baseline unanimity).
+4. **Temperature changed from pre-registered 0.2 to 0 for Gemini and GPT-5.4.** PI methodological concern that nonzero temperature contaminates flip-rate measurement; rerun completed April 24-25, 2026; rerun confirmed primary outcome was meaningfully understated for Gemini 2.5 Pro at temperature 0.2 (4.33% -> 8.34%) but not for GPT-5.4 (3.46% -> 3.61%).
+
+## Forward References
+
+This lock file is referenced by:
+
+- The TRIPOD-LLM compliance package (post-rerun update)
+- The pre-registration document at `PREREGISTRATION.md`
+- Public repository: `github.com/alexpiening1818/llm-clinical-decision-audit`
+
+This lock will be superseded by:
+
+- A future lock when expert clinical adjudication is complete and integrated
+- A final lock at manuscript submission
+
+## Locking Attestation
+
+By committing this file to the repository, the lock author attests that:
+
+1. The numerical results reported are derived from the data files referenced above.
+2. No modifications to data or analysis code will be made retroactively without superseding this lock file with a new version.
+3. The reported deviations from pre-registration are accurately characterized.
+4. All raw response data and analysis outputs referenced are preserved in the public repository.
+
+Locked: April 26, 2026
+Lock author: Alexander Piening
